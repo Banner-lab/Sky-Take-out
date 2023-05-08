@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
@@ -42,7 +44,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
+        // TODO 后期需要进行md5加密，然后再进行比对,加盐加密
+        String salt = employee.getSalt();
+        password = password + salt;
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         log.info("密码比对：{}", password);
         if (!password.equals(employee.getPassword())) {
