@@ -13,9 +13,9 @@ sky:
     password: 123456
   alioss:
     endpoint: oss-cn-hangzhou.aliyuncs.com
-    access-key-id: LTAI5tPeFLzsPPT8gG3LPW64
-    access-key-secret: U6k1brOZ8gaOIXv3nXbulGTUzy6Pd7
-    bucket-name: sky-take-out
+    access-key-id: LTAI5tCN2fHC5UY9omFBJC3S
+    access-key-secret: gjtpmCAtQxPJ5l20NI93Q60AVCxOKc
+    bucket-name: sky-tak-out
   wechat:
     appid: wxffb3637a228223b8
     secret: 84311df9199ecacdf4f12d27b6b9522d
