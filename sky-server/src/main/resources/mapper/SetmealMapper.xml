@@ -8,6 +8,44 @@
         values (#{categoryId},#{name},#{price},#{description},#{image},#{createTime},#{updateTime},#{createUser},#{updateUser})
     </insert>
 
+    <update id="updateById">
+        update setmeal
+            <set>
+                <if test="categoryId != null">
+                    category_id = #{categoryId},
+                </if>
+                <if test="description != null">
+                    description = #{description},
+                </if>
+                <if test="image != null">
+                    image = #{image},
+                </if>
+                <if test="name != null and name != ''">
+                    name = #{name},
+                </if>
+                <if test="price != null">
+                    price = #{price},
+                </if>
+                <if test="status != null ">
+                    status = #{status},
+                </if>
+                <if test="updateTime != null">
+                    update_time = #{updateTime},
+                </if>
+                <if test="updateUser != null">
+                    update_user = #{updateUser}
+                </if>
+            </set>
+            where id = #{id}
+    </update>
+
+    <delete id="deleteBatch">
+        delete from setmeal where id in
+                    <foreach collection="ids" item="id" separator="," open="(" close=")">
+                        #{id}
+                    </foreach>
+    </delete>
+
     <select id="query" resultType="com.sky.vo.SetmealVO">
         select s.* , c.name as categoryName from setmeal s  inner join
         category c on s.category_id = c.id
@@ -29,6 +67,15 @@
         select s.* , c.name as categoryName from setmeal s inner join
             category c on s.category_id = c.id
             where  s.id = #{id}
+    </select>
+
+    <select id="countByStatus" resultType="java.lang.Integer">
+        select count(id) from setmeal
+                where status = #{status}
+                and id in
+                <foreach collection="ids" item="id"  open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
     </select>
 
 </mapper>

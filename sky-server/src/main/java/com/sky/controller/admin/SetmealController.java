@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @ClassName SetmealController
  * @Description TODO
@@ -61,5 +63,44 @@ public class SetmealController {
     public Result<SetmealVO> getById(@PathVariable("id") Long id){
         SetmealVO setmealVo = setmealService.queryById(id);
         return Result.success(setmealVo);
+    }
+
+    /**
+     * 修改套餐数据
+     * @param
+     * @param setmealDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改套餐")
+    public Result update(@RequestBody SetmealDTO setmealDTO){
+        setmealService.updateWithDish(setmealDTO);
+        return Result.success();
+    }
+
+    /**
+     * 根据id修改套餐售卖状态
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("套餐启售或停售")
+    public Result status(@PathVariable Integer status,@RequestParam Long id){
+        log.info("status:{},id:{}",status,id);
+        setmealService.updateWithStatus(status,id);
+        return Result.success();
+    }
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    @ApiOperation("批量删除套餐")
+    public Result delete(@RequestParam("ids") List<Long> ids){
+        setmealService.delete(ids);
+        return Result.success();
     }
 }

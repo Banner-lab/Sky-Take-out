@@ -120,7 +120,7 @@ public class DishServiceImpl implements DishService {
     @Transactional
     public void delete(List<Long> ids) {
         // 查看要删除的菜品中是否有菜品处于启售状态
-        Integer cnt = dishMapper.countByStatus(ids);
+        Integer cnt = dishMapper.countByStatus(ids,StatusConstant.ENABLE);
         if(cnt > 0){
             throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
         }

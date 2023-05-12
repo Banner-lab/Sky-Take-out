@@ -7,7 +7,10 @@ import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface SetmealMapper {
@@ -26,4 +29,11 @@ public interface SetmealMapper {
     Page<SetmealVO> query(SetmealPageQueryDTO setmealPageQueryDTO);
 
     SetmealVO queryById(Long id);
+
+    @AutoFill(OperationType.UPDATE)
+    void updateById(Setmeal setmeal);
+
+    Integer countByStatus(@Param("ids") List<Long> ids,@Param("status") Integer status);
+
+    void deleteBatch(@Param("ids") List<Long> ids);
 }

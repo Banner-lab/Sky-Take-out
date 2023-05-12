@@ -11,6 +11,11 @@
             </foreach>
     </insert>
 
+
+    <delete id="deleteBySetmealId">
+        delete from setmeal_dish where setmeal_id = #{id}
+    </delete>
+
     <select id="queryByDishId" resultType="com.sky.entity.SetmealDish">
         select * from setmeal_dish where dish_id = #{id}
     </select>
