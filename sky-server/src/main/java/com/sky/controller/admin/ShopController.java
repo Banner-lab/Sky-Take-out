@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.result.Result;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController("adminShopController")
 @Slf4j
 @RequestMapping("/admin/shop")
-@ApiModel("套餐相关接口")
+@Api(tags = "套餐相关接口")
 public class ShopController {
 
     public static final String KEY = "SHOP_STATUS";

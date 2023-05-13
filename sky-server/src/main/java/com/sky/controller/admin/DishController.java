@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  * @Date 2023/5/10 11:20
  * @Version 1.0
  */
-@RestController
+@RestController("adminDishController")
 @RequestMapping("/admin/dish")
 @Slf4j
 @Api("菜品管理")
@@ -30,6 +31,16 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    /**
+     * 清楚缓存数据
+     * @param pattern
+     */
+    private void cleanCache(String pattern){
+        redisTemplate.delete(redisTemplate.keys(pattern));
+    }
     /**
      * 添加菜品
      * @param dishDTO
@@ -39,6 +50,10 @@ public class DishController {
     @ApiOperation("新增菜品")
     public Result add(@RequestBody DishDTO dishDTO){
         dishService.add(dishDTO);
+
+        //清除缓存中数据
+        String key  = "dish_"+dishDTO.getCategoryId();
+        cleanCache(key);
         return Result.success();
     }
 
@@ -69,6 +84,10 @@ public class DishController {
     @ApiOperation("修改菜品")
     public Result update(@RequestBody DishDTO dishDTO){
         dishService.update(dishDTO);
+
+        // 删除缓存中所有的数据
+        cleanCache("dish_*");
+
         return Result.success();
     }
 
@@ -81,6 +100,10 @@ public class DishController {
     @ApiOperation("删除菜品")
     public Result delete(@RequestParam("ids") List<Long> ids){
         dishService.delete(ids);
+
+        String key = "dish_*";
+        cleanCache(key);
+
         return Result.success();
     }
 
@@ -94,6 +117,9 @@ public class DishController {
     @ApiOperation("启售或停售")
     public Result updateStatus(@PathVariable Integer status,@RequestParam Long id){
         dishService.updateStatus(status,id);
+
+        cleanCache("dish_*");
+
         return Result.success();
     }
 

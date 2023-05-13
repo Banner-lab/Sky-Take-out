@@ -5,6 +5,7 @@ import com.sky.anno.AutoFill;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.enumeration.OperationType;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,8 @@ public interface SetmealMapper {
     Integer countByStatus(@Param("ids") List<Long> ids,@Param("status") Integer status);
 
     void deleteBatch(@Param("ids") List<Long> ids);
+
+    List<Setmeal> list(Setmeal setmeal);
+
+    List<DishItemVO> getDishItemById(Long id);
 }
