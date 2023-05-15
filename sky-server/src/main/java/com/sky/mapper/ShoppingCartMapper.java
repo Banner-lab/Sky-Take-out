@@ -3,6 +3,7 @@ package com.sky.mapper;
 import com.sky.entity.ShoppingCart;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface ShoppingCartMapper {
 
     @Delete("delete from shopping_cart where id=#{id}")
     void deleteById(Long id);
+
+    void insertBatch(@Param("carts") List<ShoppingCart> carts);
 }

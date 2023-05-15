@@ -26,3 +26,7 @@ sky:
     weChatPayCertFilePath: D:\wechatpay_166D96F876F45C7D07CE98952A96EC980368ACFC.pem
     notifyUrl: https://www.weixin.qq.com/wxpay/pay.php
     refundNotifyUrl: https://www.weixin.qq.com/wxpay/pay.php
+  shop:
+    address: 湖南省长沙市高新区东方红中路368号
+  baidu:
+    ak: VjZ1T3j1lrGDTGkfGalwlEZjAH46iGDG
