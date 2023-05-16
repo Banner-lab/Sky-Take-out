@@ -15,6 +15,7 @@ import com.sky.mapper.CategoryMapper;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
+import com.sky.result.Result;
 import com.sky.service.CategoryService;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +47,9 @@ public class DishServiceImpl implements DishService {
     private DishFlavorMapper dishFlavorMapper;
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品
@@ -163,6 +168,16 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public List<DishVO> listWithFlavor(Dish dish) {
+        //先查询redis缓存中，如果有直接返回，否则查询数据库
+        String key = "dish_"+dish.getCategoryId();
+        List<DishVO> list = (List<DishVO>) redisTemplate.opsForValue().get(key);
+        if(list != null && list.size() > 0){
+            return list;
+        }
+        // 查询数据库，并将结果加入redis缓存
+
+
+
         List<Dish> dishes = dishMapper.queryByCateoryId(dish.getCategoryId());
 
         List<DishVO> dishVOList = new ArrayList<>();
@@ -176,6 +191,9 @@ public class DishServiceImpl implements DishService {
             dishVO.setFlavors(dishFlavors);
             dishVOList.add(dishVO);
         });
+
+        redisTemplate.opsForValue().set(key,dishVOList);
+
         return dishVOList;
     }
 }

@@ -20,6 +20,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.weaver.ast.Or;
@@ -59,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailMapper orderDetailMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     @Autowired
     UserMapper userMapper;
@@ -216,9 +220,6 @@ public class OrderServiceImpl implements OrderService {
         String result = HttpClientUtil.doGet(urlDistance, param);
         JSONObject res = (JSONObject) JSONObject.parseObject(result).getJSONObject("result");
 
-        if(!res.getString("status").equals("0")){
-            throw new OrderBusinessException("配送路线规划失败");
-        }
 
         JSONArray jsonArray = (JSONArray) res.get("routes");
         Integer distance = (Integer) ((JSONObject)jsonArray.get(0)).get("distance");
@@ -348,6 +349,14 @@ public class OrderServiceImpl implements OrderService {
                 .payStatus(Orders.PAID)
                 .checkoutTime(LocalDateTime.now())
                 .build();
+
+        Map map = new HashMap();
+        map.put("type",1);
+        map.put("orderId",orders.getId());
+        map.put("content","订单号:"+ordersDB.getNumber());
+
+        String jsonString = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(jsonString);
 
         orderMapper.update(orders);
     }
@@ -534,4 +543,25 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Orders.COMPLETED);
         orderMapper.update(order);
     }
+
+    /**
+     * 催单
+     * @param id
+     */
+    @Override
+    public void reminder(Long id) {
+        Orders order = orderMapper.queryById(id);
+        if(order == null ||!order.getStatus().equals(Orders.TO_BE_CONFIRMED)){
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        Map map = new HashMap();
+        map.put("type",2);
+        map.put("orderId",order.getId());
+        map.put("content","订单号:"+order.getNumber());
+
+        String jsonString = JSON.toJSONString(map);
+
+        webSocketServer.sendToAllClient(jsonString);
+    }
+
 }

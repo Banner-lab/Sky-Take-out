@@ -42,6 +42,12 @@
         from orders
     </select>
 
+    <select id="queryTimeOut" resultType="com.sky.entity.Orders">
+        select * from orders where  `status` = #{status} and `order_time` &lt; #{time}
+    </select>
+
+
+
     <update id="update" parameterType="com.sky.entity.Orders">
         update orders
         <set>

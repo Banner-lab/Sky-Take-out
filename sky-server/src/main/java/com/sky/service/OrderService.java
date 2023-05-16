@@ -1,12 +1,14 @@
 package com.sky.service;
 
 import com.sky.dto.*;
+import com.sky.entity.Orders;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import io.swagger.models.auth.In;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
@@ -48,4 +50,7 @@ public interface OrderService {
     void cancelOrder(OrdersCancelDTO ordersCancelDTO);
 
     void complete(Long id);
+
+
+    void reminder(Long id);
 }
