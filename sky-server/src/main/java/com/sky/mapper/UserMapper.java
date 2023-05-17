@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+
 @Mapper
 public interface UserMapper {
     @Select("select * from user where openid=#{openid}")
@@ -17,4 +19,7 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{id}")
     User queryById(Long id);
+
+
+    Integer countUsers(LocalDateTime begin, LocalDateTime end);
 }

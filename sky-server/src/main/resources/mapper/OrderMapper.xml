@@ -45,7 +45,53 @@
     <select id="queryTimeOut" resultType="com.sky.entity.Orders">
         select * from orders where  `status` = #{status} and `order_time` &lt; #{time}
     </select>
+    <select id="queryByDate" resultType="java.lang.Double">
+        SELECT SUM(amount) FROM orders
+        <where>
+            <if test="begin != null">
+                #{begin} &lt; order_time
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
 
+    <select id="countOrders" resultType="java.lang.Integer">
+        SELECT count(id) FROM orders
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="begin != null">
+                and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and order_time &lt; #{end}
+            </if>
+
+        </where>
+
+    </select>
+
+    <select id="queryGoodsSalesTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        SELECT SUM(od.number) as number ,od.name as name FROM order_detail od INNER JOIN orders o
+        ON o.id = od.order_id
+        <where>
+            o.status = 5
+            <if test="begin != null">
+                    and order_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                    and order_time &lt; #{end}
+            </if>
+        </where>
+        GROUP BY od.name ORDER BY SUM(od.number) DESC
+        LIMIT 0 , 10
+    </select>
 
 
     <update id="update" parameterType="com.sky.entity.Orders">
