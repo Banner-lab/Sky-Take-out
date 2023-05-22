@@ -95,16 +95,15 @@ public class ReportServiceImpl implements ReportService {
         dateList.forEach(d->{
             LocalDateTime start = d.atStartOfDay();
             LocalDateTime last = d.atTime(23,59,59);
+
             Integer cnt = userMapper.countUsers(start,last);
-
             Integer cnt1 = userMapper.countUsers(null,last);
-            cnt1 = cnt1 == null ? 0 : cnt1;
 
+            cnt1 = cnt1 == null ? 0 : cnt1;
             cnt = cnt == null ? 0 : cnt;
             newUsers.add(cnt);
             totalUsers.add(cnt1);
         });
-
 
         return UserReportVO.builder().dateList(StringUtils.join(dateList,","))
                 .newUserList(StringUtils.join(newUsers,","))
